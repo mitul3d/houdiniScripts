@@ -1,0 +1,14 @@
+import toolutils
+scene_viewer = toolutils.sceneViewer()
+viewports = scene_viewer.viewports()
+
+# Choose the viewport you want to change the color scheme
+persp_viewport = viewports[-1]
+viewport_settings = persp_viewport.settings()
+
+if(viewport_settings.colorScheme().name() == 'Dark'):
+    viewport_settings.setColorScheme(hou.viewportColorScheme.Light)
+elif(viewport_settings.colorScheme().name() == 'Light'):
+    viewport_settings.setColorScheme(hou.viewportColorScheme.Dark)
+else :
+    viewport_settings.setColorScheme(hou.viewportColorScheme.Dark)
