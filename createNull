@@ -1,0 +1,57 @@
+selected = hou.selectedNodes()
+
+def ask_input():
+    button = ["ok","cancel"]
+    choise = hou.ui.readInput("OUT suffix",button,close_choice=1)
+    return choise
+    
+def name(choise):
+    name = choise
+    new_name = ("OUT_"+name.replace(" ","_"))
+    return new_name
+    
+def create_null(parent):
+    my_null = parent.createNode("null",new_name)    
+    my_null.setColor(hou.Color(0.475,0.812,0.204))
+    return my_null
+
+ 
+if (len(selected)>0):
+    choise = ask_input()
+    new_name = name(choise[1])
+    if(choise[0] == 0):
+        if(len(selected)>0):
+            for each in selected:
+                my_null = create_null(each.parent())
+                
+                position = each.position()
+                my_null.setPosition(position)
+                my_null.move([0,-1])
+    
+                my_null.setInput(0,each)
+                
+                each.setSelected(0)
+                my_null.setSelected(1)      
+    else:
+        pass    
+   
+else:
+    try:
+        pan = hou.ui.paneTabUnderCursor()
+        parent = hou.ui.paneTabUnderCursor().pwd()
+        
+        if(pan.isUnderCursor()==1 and pan.type().name() == "NetworkEditor"):
+            choise = ask_input()
+            if(choise[0] == 0):
+                new_name = name(choise[1])
+                my_null = create_null(parent)
+                
+                cursor_pos = pan.cursorPosition()
+                my_null.setPosition(cursor_pos)
+                
+                my_null.setSelected(0)
+                my_null.setSelected(1)
+            else:
+                pass
+    except:
+        hou.ui.displayMessage("Move the cursor into the Network Editor")
