@@ -1,0 +1,65 @@
+def list_copied():
+    copied = hou.ui.getTextFromClipboard()
+    list_copied = copied.split()
+    return list_copied
+
+def new_list():
+    list = list_copied()
+    new_list = []
+    for each in list:
+        if(hou.item(each)!=None):
+            new_list.append(each)
+    return new_list
+
+def set_node_prop(obj):
+    pan = hou.ui.paneTabUnderCursor()
+    obj.setColor(hou.Color(0.29,0.565,0.886))
+    cursor_pos = pan.cursorPosition()
+    obj.setPosition(cursor_pos)
+#change selection to new merge node
+    hou.clearAllSelected()
+    obj.setSelected(1)
+    obj.setDisplayFlag(1)
+    obj.setRenderFlag(1)
+
+
+#get current selection
+selected = hou.selectedNodes()
+
+#get valid list of copied nodes
+list = new_list()
+len_list = len(list)
+
+
+#get current panel under the pointer
+pan = hou.ui.paneTabUnderCursor()
+parent = hou.ui.paneTabUnderCursor().pwd()
+
+if(len_list>0):
+    if(pan.isUnderCursor()==1 and pan.type().name() == "NetworkEditor"):
+        last_copied = list[len_list-1]
+        last_copied_name = last_copied.rsplit("/",1)[1]
+        
+        button = ["ok","cancel"]
+        choise = hou.ui.readInput("Object Merge",button,initial_contents=last_copied_name,close_choice=1)
+        
+        if(choise[0] == 0):
+            name = choise[1]
+            new_name = ("IN_"+name.replace(" ","_"))
+    
+            my_obj_m = parent.createNode("object_merge",new_name)
+            
+            my_obj_m.setParms({"numobj":len_list})
+            for each in range(0,len_list):
+                my_obj_m.setParms({"objpath"+str(each+1):list[each]})
+            
+            set_node_prop(my_obj_m)            
+else:
+    if(pan.isUnderCursor()==1 and pan.type().name() == "NetworkEditor"):
+        button = ["ok","cancel"]
+        choise = hou.ui.readInput("Object Merge",button,initial_contents="No Node copied",close_choice=1)
+        if(choise[0] == 0):
+            name = choise[1]
+            new_name = ("IN_"+name.replace(" ","_"))
+            my_obj_m = parent.createNode("object_merge",new_name)
+            set_node_prop(my_obj_m)
