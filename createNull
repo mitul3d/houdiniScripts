@@ -1,3 +1,4 @@
+''' python
 selected = hou.selectedNodes()
 
 def ask_input():
@@ -55,3 +56,4 @@ else:
                 pass
     except:
         hou.ui.displayMessage("Move the cursor into the Network Editor")
+'''
