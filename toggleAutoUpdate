@@ -1,0 +1,7 @@
+if(hou.updateModeSetting().name() == "Manual"):
+    hou.setUpdateMode(hou.updateMode.AutoUpdate)
+elif(hou.updateModeSetting().name() == "AutoUpdate"):
+    hou.setUpdateMode(hou.updateMode.Manual)
+else:
+    hou.setUpdateMode(hou.updateMode.Manual)
+
