@@ -1,0 +1,1 @@
+hou.currentDopNet().parm('resimulate').pressButton()
